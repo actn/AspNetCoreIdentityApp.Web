@@ -5,6 +5,7 @@ using AspNetCoreIdentityApp.Web.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using System.Text.RegularExpressions;
 using System.Net.Mail;
+using AspNetCoreIdentityApp.Web.Extensions;
 
 namespace AspNetCoreIdentityApp.Web.Controllers
 {
@@ -52,22 +53,33 @@ namespace AspNetCoreIdentityApp.Web.Controllers
                 return View();
             }
             Microsoft.AspNetCore.Identity.SignInResult result;
-            AppUser user=null;
-            if (MailAddress.TryCreate(request.UserName,out _))
-            {
-                user = await _userManager.FindByEmailAsync(request.UserName);
-               
-            }
+            AppUser user = MailAddress.TryCreate(request.UserName, out _) ?
+           await _userManager.FindByEmailAsync(request.UserName) :
+           await _userManager.FindByNameAsync(request.UserName);
 
-            result= user == null ? await _signInManager.PasswordSignInAsync(request.UserName, request.Password, request.RememberMe, false) : await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, false);
+            result = user == null ? await _signInManager.PasswordSignInAsync(request.UserName, request.Password, request.RememberMe, true) : await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, true);
 
-            if (!result.Succeeded)
+            if (result.IsLockedOut)
             {
-                ModelState.AddModelError(string.Empty, "Email veya şifre hatalıdır.");
+                ModelState.AddModelError(string.Empty,"Kullanıcınız 3 dakikalığına kilitlenmiştir.");
                 return View();
             }
 
-            return Redirect(returnUrl);
+            if (result.Succeeded)
+            {
+                return Redirect(returnUrl);
+             
+            }
+            var errorList= new List<string>();
+            errorList.Add("Email veya şifre hatalıdır.");
+            if (user!=null)
+            {
+                errorList.Add($"Başarısız giriş sayısı {await _userManager.GetAccessFailedCountAsync(user)}");
+            }
+
+            ModelState.AddModelErrorList(errorList);
+            return View();
+
         }
         public IActionResult SignUp()
         {

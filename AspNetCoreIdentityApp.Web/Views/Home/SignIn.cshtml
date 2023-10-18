@@ -14,16 +14,16 @@
         <form asp-controller="Home" asp-action="SignIn" asp-route-returnUrl="@Context.Request.Query["returnURl"]" method="post">
             <div class="mb-3">
                 <label for="UserName" class="col-md-4 col-form-label" asp-for="UserName"></label>
-                <input asp-for="UserName" class="form-control" placeholder="Email veya kullanıcı adı giriniz.">
+                <input value="acetin1" asp-for="UserName" class="form-control" placeholder="Email veya kullanıcı adı giriniz.">
                 <span class="text-danger" asp-validation-for="UserName"></span>
             </div>
             <div class="mb-3">
-                <label for="Password" class="form-label" asp-for="Password">Şifre :</label>
-                <input type="password" class="form-control" asp-for="Password">
+                <label for="Password" class="form-label" asp-for="Password"></label>
+                <input value="Deneme123!" type="password" class="form-control" asp-for="Password">
             </div>
             <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                <label class="form-check-label" asp-for="RememberMe"></label>
+                <input type="checkbox" class="form-check-input" asp-for="RememberMe">
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
