@@ -4,6 +4,10 @@
 
 @model SignInViewModel
 
+@section Scripts{
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
+
 <div class="row">
     <div class="col-md-4 offset-md-4">
         <h2>Kullanıcı Giriş</h2>
@@ -21,14 +25,20 @@
                 <label for="Password" class="form-label" asp-for="Password"></label>
                 <input value="Deneme123!" type="password" class="form-control" asp-for="Password">
             </div>
-            <div class="mb-3 form-check">
-                <label class="form-check-label" asp-for="RememberMe"></label>
-                <input type="checkbox" class="form-check-input" asp-for="RememberMe">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3 form-check">
+                        <label class="form-check-label" asp-for="RememberMe"></label>
+                        <input type="checkbox" class="form-check-input" asp-for="RememberMe">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <a class="btn btn-link me-0" asp-action="ForgetPassword" asp-controller="Home">Şifremi Unuttum</a>
+                </div>
             </div>
+
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
 
     </div>
 </div>
-
-
