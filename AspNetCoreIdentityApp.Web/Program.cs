@@ -15,6 +15,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SQLConnection"));
 
 });
+
+builder.Services.Configure<SecurityStampValidatorOptions>(options =>
+{
+    options.ValidationInterval = TimeSpan.FromMinutes(30);
+});
+
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EMailSettings"));
 builder.Services.AddIdentityWithExt();
 builder.Services.AddScoped<IEmailService,EmailService>();

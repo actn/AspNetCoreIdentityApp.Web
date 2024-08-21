@@ -29,11 +29,13 @@ namespace AspNetCoreIdentityApp.Web.ViewModels
         [Required(ErrorMessage = "Telefon boş bırakılamaz.")]
         [Display(Name="Telefon :")]
         public string Phone  { get; set; }
-        
+
+        [DataType(DataType.Password)]
         [Required(ErrorMessage = "Şifre boş bırakılamaz.")]
         [Display(Name="Şifre :")]
         public string Password { get; set; }
-        
+
+        [DataType(DataType.Password)]
         [Compare(nameof(Password),ErrorMessage= "Farklı bir şifre girdiniz.")]
         [Required(ErrorMessage = "Şifre tekrarı boş bırakılamaz.")]
         [Display(Name="Şifre Terkar :")]

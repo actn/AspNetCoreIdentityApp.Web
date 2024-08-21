@@ -144,5 +144,47 @@ namespace AspNetCoreIdentityApp.Web.Controllers
             TempData["SuccessMessage"] = "Şifre yenileme linki e-posta adresinize gönderilmiştir.";
             return RedirectToAction(nameof(ForgetPassword));
         }
+
+        public IActionResult ResetPassword(string userId,string token)
+        {
+            TempData["userId"] = userId; 
+            TempData["token"]=token;
+            
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel request)
+        {
+            var userId = TempData["userId"];
+            var token = TempData["token"];
+
+            if (userId is null || token is null)
+            {
+                throw new ArgumentException("Hatalı istek parametreleri lütfen linki kontrol ediniz.");
+
+            }
+
+            var hasUser = await _userManager.FindByIdAsync(userId.ToString());
+
+            if (hasUser==null)
+            {
+                ModelState.AddModelError(string.Empty, "Kullanıcı bulunamadı.");
+                return View();
+            }
+
+            var result = await _userManager.ResetPasswordAsync(hasUser, token.ToString(), request.Password);
+
+            if (result.Succeeded)
+            {
+                TempData["SuccessMessage"] = "Şifreniz başarılı şekilde değiştirilmiştir.";
+            }
+            else
+            {
+                ModelState.AddModelErrorList(result.Errors.Select(p=>p.Description).ToList());
+            }
+
+            return View();
+        }
     }
 }
